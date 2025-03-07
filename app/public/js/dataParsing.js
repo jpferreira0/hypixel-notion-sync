@@ -45,19 +45,41 @@ function renderProfile(profile) {
     const constDaysTillEndYear = daysTillEndYear();
     const detailsDiv = document.getElementById('profileDetails');
     var coin_purse = profile.raw.currencies.coin_purse || 'N/A';
+    renderCollections(profile);
+    //var collection_oak = profile.raw.collection.LOG || 'N/A';
+
     // Tratar o número para ter nenhuma casa decimal e separadores de milhar
     var coin_goal = 10000000000;
     var coins_per_day = (coin_goal - coin_purse) / constDaysTillEndYear;
     coin_purse = coin_purse.toLocaleString('en-US', { maximumFractionDigits: 0 });
     coins_per_day = coins_per_day.toLocaleString('en-US', { maximumFractionDigits: 0 });
+    collection_oak = collection_oak.toLocaleString('en-US', { maximumFractionDigits: 0 });
     // Mostrar os detalhes do perfil
     detailsDiv.innerHTML = `
         <h3>Profile: ${profile.cute_name}</h3>
         <p><strong>Coin Purse:</strong> ${coin_purse}</p>
-        <p><strong>Coins per day:</strong> ${coins_per_day}</p>
     `;
 }
 
+function renderCollections(profile) {
+    const detailsDiv = document.getElementById('profileDetails');
 
+    if (!profile.raw || !profile.raw.collection) {
+        detailsDiv.innerHTML = "<p><strong>No collection data available</strong></p>";
+        return;
+    }
+
+    const collections = profile.raw.collection; // Obtém todas as coleções
+    let collectionHTML = "<h3>Collections:</h3>";
+
+    Object.keys(collections).forEach(key => {
+        let value = collections[key] || 'N/A';
+        value = typeof value === "number" ? value.toLocaleString('en-US', { maximumFractionDigits: 0 }) : value;
+        
+        collectionHTML += `<p><strong>${key.replace(/_/g, ' ')}:</strong> ${value}</p>`;
+    });
+
+    detailsDiv.innerHTML = collectionHTML;
+}
 
 export { dataParsing };

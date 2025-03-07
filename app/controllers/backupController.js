@@ -1,12 +1,17 @@
+//* --- Modules ---
 const fs = require('fs');
 const axios = require('axios');
 const path = require('path');
 
+//* --- Backup Configuration ---
 const BACKUP_FOLDER = 'app/backups';
 const BACKUP_EXPIRATION = 24 * 60 * 60 * 1000; // 1 dia
-const API_URL = 'https://sky.shiiyu.moe/api/v2/profile/TruePlayeZ';
 
-// Função para obter o nome do backup baseado na data/hora atual
+//* --- API Configuration ---
+const username = 'TruePlayeZ';
+const API_URL = 'https://sky.shiiyu.moe/api/v2/profile/' + username;
+
+//* --- Create the name for the backup file (dd_mm_aaaa_hh_mm_ss.txt) ---
 function getBackupFileName() {
     const now = new Date();
     const formattedDate = `${now.getDate().toString().padStart(2, '0')}_${
@@ -18,7 +23,7 @@ function getBackupFileName() {
     return path.join(BACKUP_FOLDER, `${formattedDate}.txt`);
 }
 
-// Função para obter o backup mais recente
+//* --- Check the last backup file---
 function getLatestBackup() {
     const files = fs.readdirSync(BACKUP_FOLDER)
         .filter(file => file.endsWith('.txt'))
@@ -31,7 +36,7 @@ function getLatestBackup() {
     return files.length > 0 ? path.join(BACKUP_FOLDER, files[0].file) : null;
 }
 
-// Função para obter os dados (do backup ou API)
+//* --- Get data from the API or from the backup ---
 async function getData(req, res) {
     try {
         const latestBackup = getLatestBackup();
@@ -39,26 +44,21 @@ async function getData(req, res) {
         if (latestBackup) {
             const stats = fs.statSync(latestBackup);
             const now = Date.now();
-
-            if (now - stats.mtimeMs < BACKUP_EXPIRATION) {
+            //* --- If the backup has less than 24 hours, get the data from the backup ---
+            if (now - stats.mtimeMs < BACKUP_EXPIRATION) { 
                 console.log('Serving data from latest backup:', latestBackup);
                 const backupData = fs.readFileSync(latestBackup, 'utf8');
                 return res.json(JSON.parse(backupData));
             }
         }
-
-        // Se o backup for velho ou não existir, faz um pedido à API original
+        //* --- If the backup is older than 24 hours, get the data from the API ---
         console.log('Fetching new data from API.');
-        //const response = await axios.get(API_URL);
+        const response = await axios.get(API_URL);
         const data = response.data;
 
-        // Criar um novo ficheiro de backup com o nome formatado
+        //* --- Save the new backup ---
         const backupFile = getBackupFileName();
         fs.writeFileSync(backupFile, JSON.stringify(data, null, 2));
-
-        console.log('New backup saved:', backupFile);
-
-        // Enviar os dados para o frontend
         res.json(data);
 
     } catch (error) {

@@ -1,21 +1,23 @@
+//* --- Modules ---
 const express = require("express");
 const path = require('path');
-const { getData } = require('./controllers/backupController');
 
+//* --- App initialization ---
 const app = express();
 
+//* --- Public Folder ---
 const publicPath = path.join(__dirname, 'public');
 app.use(express.static(publicPath));
 
+//* --- View Engine ---
 app.set("view engine", "hbs");
-app.set("views", "app/views");
+app.set('views', path.join(__dirname, './views'));
 
-app.get("/", (req, res) => {
-    res.render("index");
-});
+//* --- Routes ---
+const routes = require('./routes/routes');
+app.use('/', routes);
 
-app.get('/api/data', getData);
-
+//* --- Opening the server ---
 app.listen(3000, () => {
     console.log("Server is running on port 3000");
 });
