@@ -2,14 +2,17 @@
 const fs = require('fs');
 const axios = require('axios');
 const path = require('path');
+const API_FILE = require('../../env/API_KEY.json');
+const API_KEY = API_FILE["API_KEY"];
 
 //* --- Backup Configuration ---
-const BACKUP_FOLDER = 'app/backups';
+const BACKUP_FOLDER = 'backups';
 const BACKUP_EXPIRATION = 24 * 60 * 60 * 1000; // 1 dia
 
 //* --- API Configuration ---
 const username = 'TruePlayeZ';
 const API_URL = 'https://sky.shiiyu.moe/api/v2/profile/' + username;
+const API_LINK = 'https://api.hypixel.net/v2/skyblock/profile';
 
 //* --- Create the name for the backup file (dd_mm_aaaa_hh_mm_ss.txt) ---
 function getBackupFileName() {
