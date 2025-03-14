@@ -1,18 +1,20 @@
 //* --- Modules ---
 const fs = require('fs');
-const axios = require('axios');
+const axios = require('axios'); //TODO - GitHub said it has 1 vulnerability check it out
 const path = require('path');
-const API_FILE = require('../../env/API_KEY.json');
-const API_KEY = API_FILE["API_KEY"];
+const dotenv = require('dotenv');
+
+//* --- Environment Variables ---
+dotenv.config();
+const HYPIXEL_API_KEY = process.env.HYPIXEL_API_KEY;
+const HYPIXEL_USERNAME = process.env.HYPIXEL_USERNAME;
 
 //* --- Backup Configuration ---
 const BACKUP_FOLDER = 'backups';
-const BACKUP_EXPIRATION = 24 * 60 * 60 * 1000; // 1 dia
+const BACKUP_EXPIRATION = 24 * 60 * 60 * 1000; //* 1 day interval
 
-//* --- API Configuration ---
-const username = 'TruePlayeZ';
-const API_URL = 'https://sky.shiiyu.moe/api/v2/profile/' + username;
-const API_LINK = 'https://api.hypixel.net/v2/skyblock/profile';
+//* --- Hypixel API Configuration ---
+const HYPIXEL_API_LINK = 'https://api.hypixel.net/v2/skyblock/profile?key=' + HYPIXEL_API_KEY + '&profile=' + HYPIXEL_USERNAME; //TODO - Still invaled API Key (Wait for approval)
 
 //* --- Create the name for the backup file (dd_mm_aaaa_hh_mm_ss.txt) ---
 function getBackupFileName() {
@@ -39,10 +41,10 @@ function getLatestBackup() {
     return files.length > 0 ? path.join(BACKUP_FOLDER, files[0].file) : null;
 }
 
-//* --- Get data from the API or from the backup ---
-async function getData(req, res) {
+//* --- Get data from the Hypixel API ---
+async function hypixelAPI(req, res) {
     try {
-        const latestBackup = getLatestBackup();
+        const latestBackup = getLatestBackup(); //TODO - Change, instead of saving backups, save just the date of the last backup and create a limit for 1 backup per hour (Minimum)
 
         if (latestBackup) {
             const stats = fs.statSync(latestBackup);
@@ -56,7 +58,7 @@ async function getData(req, res) {
         }
         //* --- If the backup is older than 24 hours, get the data from the API ---
         console.log('Fetching new data from API.');
-        const response = await axios.get(API_URL);
+        const response = await axios.get(HYPIXEL_API_LINK);
         const data = response.data;
 
         //* --- Save the new backup ---
@@ -70,4 +72,4 @@ async function getData(req, res) {
     }
 }
 
-module.exports = { getData };
+module.exports = { hypixelAPI };

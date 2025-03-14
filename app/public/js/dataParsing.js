@@ -1,85 +1,35 @@
-function daysTillEndYear() {
-    const today = new Date();
-    const endOfYear = new Date(today.getFullYear(), 11, 31); // 31 de dezembro do ano atual
+//* --- Parse the data from the API ---
+//* NOTE: The parsing itself is done across multiple files and sent to this one ---
+// include("js/parsingBestiary.js");
+import { parsingCollections } from "./dataParsing/parsingCollections.js";
+import { notionAPI } from "./handleAPI.js";
+// include("./dataParsing/parsingCollections.js");
+// include("js/parsingSkills.js");
+// include("js/parsingSlayers.js");
+// include("js/parsingCurrency.js");
+// include("js/parsingOthers.js");
 
-    const diffTime = endOfYear - today; // Diferença em milissegundos
-    const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24)); // 1 dia em milissegundos
+//* --- Data received from the files comes in this form:
+//* data = { name: {NAME}, amount: {AMOUNT} }
+//* -> The name has to match the name of the page in Notion
+//* -> The amount is the amount of items to be updated in the page
 
-    return diffDays;
-}
-
-function dataParsing(data) {
-
-    const outputDiv = document.getElementById('apiOutput');
-    outputDiv.innerHTML = ''; // Limpar saída anterior
-
-    if (data && data.profiles) {
-        const profiles = Object.keys(data.profiles).map(key => ({
-            name: data.profiles[key].cute_name,
-            details: data.profiles[key] // Guardamos os detalhes do perfil
-        }));
-
-        const buttonContainer = document.createElement('div'); // Div para os botões
-        buttonContainer.id = 'buttonContainer';
-
-        profiles.forEach(profile => {
-            const button = document.createElement('button');
-            button.textContent = profile.name;
-            button.addEventListener('click', () => renderProfile(profile.details));
-            buttonContainer.appendChild(button);
-        });
-
-        outputDiv.appendChild(buttonContainer);
-
-        // Criar um espaço para exibir os detalhes do perfil
-        const profileDetailsDiv = document.createElement('div');
-        profileDetailsDiv.id = 'profileDetails';
-        outputDiv.appendChild(profileDetailsDiv);
-    } else {
-        outputDiv.innerHTML = 'No valid data found';
-    }
-}
-
-// Função que renderiza os detalhes do perfil selecionado
-function renderProfile(profile) {
-    const constDaysTillEndYear = daysTillEndYear();
-    const detailsDiv = document.getElementById('profileDetails');
-    var coin_purse = profile.raw.currencies.coin_purse || 'N/A';
-    renderCollections(profile);
-    //var collection_oak = profile.raw.collection.LOG || 'N/A';
-
-    // Tratar o número para ter nenhuma casa decimal e separadores de milhar
-    var coin_goal = 10000000000;
-    var coins_per_day = (coin_goal - coin_purse) / constDaysTillEndYear;
-    coin_purse = coin_purse.toLocaleString('en-US', { maximumFractionDigits: 0 });
-    coins_per_day = coins_per_day.toLocaleString('en-US', { maximumFractionDigits: 0 });
-    collection_oak = collection_oak.toLocaleString('en-US', { maximumFractionDigits: 0 });
-    // Mostrar os detalhes do perfil
-    detailsDiv.innerHTML = `
-        <h3>Profile: ${profile.cute_name}</h3>
-        <p><strong>Coin Purse:</strong> ${coin_purse}</p>
-    `;
-}
-
-function renderCollections(profile) {
-    const detailsDiv = document.getElementById('profileDetails');
-
-    if (!profile.raw || !profile.raw.collection) {
-        detailsDiv.innerHTML = "<p><strong>No collection data available</strong></p>";
-        return;
-    }
-
-    const collections = profile.raw.collection; // Obtém todas as coleções
-    let collectionHTML = "<h3>Collections:</h3>";
-
-    Object.keys(collections).forEach(key => {
-        let value = collections[key] || 'N/A';
-        value = typeof value === "number" ? value.toLocaleString('en-US', { maximumFractionDigits: 0 }) : value;
-        
-        collectionHTML += `<p><strong>${key.replace(/_/g, ' ')}:</strong> ${value}</p>`;
+function dataParsing(rawData = "data") {
+    let parsedData = [];
+    //* --- Parse the data (Across multiple files) ---
+    // parsedData.concat(parsingBestiary(data));
+    parsedData = parsedData.concat(parsingCollections(rawData));
+    //parsedData.concat(parsingCollections("data"));
+    // parsedData.concat(parsingSkills(data));
+    // parsedData.concat(parsingSlayers(data));
+    // parsedData.concat(parsingCurrency(data));
+    // parsedData.concat(parsingOthers(data));
+    //* --- Send the data to Notion API ---
+    parsedData.forEach(data => {
+        let pageName = "NOTION_PAGE_ID__" + data.name.toUpperCase().replace(/ /g, "_");
+        console.log(pageName);
+        notionAPI(pageName, data.amount);
     });
-
-    detailsDiv.innerHTML = collectionHTML;
 }
 
 export { dataParsing };

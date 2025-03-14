@@ -4,6 +4,7 @@ const path = require('path');
 
 //* --- App initialization ---
 const app = express();
+app.use(express.json());
 
 //* --- Public Folder ---
 const publicPath = path.join(__dirname, 'public');
