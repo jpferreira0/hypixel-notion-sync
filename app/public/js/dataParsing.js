@@ -26,7 +26,7 @@ function dataParsing(rawData = "data") {
     // parsedData.concat(parsingOthers(data));
     //* --- Send the data to Notion API ---
     parsedData.forEach(data => {
-        let pageName = "NOTION_PAGE_ID__" + data.name.toUpperCase().replace(/ /g, "_");
+        let pageName = data.name.toUpperCase().replace(/ /g, "_");
         console.log(pageName);
         notionAPI(pageName, data.amount);
     });

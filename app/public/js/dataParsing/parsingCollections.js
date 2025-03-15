@@ -5,8 +5,11 @@ function parsingCollections(data){
     console.log("Parsing Collections");
     let parsedData = [];
     parsedData.push({ name: "Dark Oak Wood", amount: 123000 });
-    parsedData.push({ name: "Birch Wood", amount: 3232400 });
+    parsedData.push({ name: "Birch Wood", amount: 3402400 });
     parsedData.push({ name: "Jungle Wood", amount: 543230 });
+    parsedData.push({ name: "Acacia Wood", amount: 1234000 });
+    parsedData.push({ name: "Spruce Wood", amount: 3402400 });
+    parsedData.push({ name: "Oak Wood", amount: 543230 });
     return parsedData;
 }
 
