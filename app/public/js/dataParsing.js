@@ -14,11 +14,14 @@ import { notionAPI } from "./handleAPI.js";
 //* -> The name has to match the name of the page in Notion
 //* -> The amount is the amount of items to be updated in the page
 
-function dataParsing(rawData = "data") {
+
+
+function dataParsing(rawData) {
     let parsedData = [];
+    const profileData = Object.values(rawData.profile.members)[0];
     //* --- Parse the data (Across multiple files) ---
     // parsedData.concat(parsingBestiary(data));
-    parsedData = parsedData.concat(parsingCollections(rawData));
+    parsedData = parsedData.concat(parsingCollections(profileData.collection));
     //parsedData.concat(parsingCollections("data"));
     // parsedData.concat(parsingSkills(data));
     // parsedData.concat(parsingSlayers(data));
@@ -27,8 +30,8 @@ function dataParsing(rawData = "data") {
     //* --- Send the data to Notion API ---
     parsedData.forEach(data => {
         let pageName = data.name.toUpperCase().replace(/ /g, "_");
-        console.log(pageName);
-        notionAPI(pageName, data.amount);
+        console.log(pageName + ": " + data.amount);
+        //notionAPI(pageName, data.amount);
     });
 }
 

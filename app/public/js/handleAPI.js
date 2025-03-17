@@ -22,7 +22,6 @@ function hypixelAPI() {
             return response.json();
         })
         .then(data => {
-            console.log("Sending data to be parsed");
             dataParsing(data);
         })
         .catch(error => {

@@ -107,7 +107,6 @@ async function createNewPage(res, databaseID, amount, daysUntilGoal, goalAmount)
 //* --- Update data to Notion (receive the pageName and the amount from the post route) ---
 async function notionAPI(req, res) {
     const { pageName, amount } = req.body;
-    console.log("Page Name: " + pageName);
     const pageID = process.env["NOTION_PAGE_ID__" + pageName];
     const databaseID = process.env["NOTION_DATABASE_ID__" + pageName];
     if (!pageID) {

@@ -7,14 +7,14 @@ const dotenv = require('dotenv');
 //* --- Environment Variables ---
 dotenv.config();
 const HYPIXEL_API_KEY = process.env.HYPIXEL_API_KEY;
-const HYPIXEL_USERNAME = process.env.HYPIXEL_USERNAME;
+const HYPIXEL_PROFILE_UUID = process.env.HYPIXEL_PROFILE_UUID;
 
 //* --- Backup Configuration ---
 const BACKUP_FOLDER = 'backups';
 const BACKUP_EXPIRATION = 24 * 60 * 60 * 1000; //* 1 day interval
 
 //* --- Hypixel API Configuration ---
-const HYPIXEL_API_LINK = 'https://api.hypixel.net/v2/skyblock/profile?key=' + HYPIXEL_API_KEY + '&profile=' + HYPIXEL_USERNAME; //TODO - Still invaled API Key (Wait for approval)
+const HYPIXEL_API_LINK = 'https://api.hypixel.net/v2/skyblock/profile?key=' + HYPIXEL_API_KEY + '&profile=' + HYPIXEL_PROFILE_UUID; //TODO - Still temporary API Key (Wait for approval)
 
 //* --- Create the name for the backup file (dd_mm_aaaa_hh_mm_ss.txt) ---
 function getBackupFileName() {
@@ -44,7 +44,7 @@ function getLatestBackup() {
 //* --- Get data from the Hypixel API ---
 async function hypixelAPI(req, res) {
     try {
-        const latestBackup = getLatestBackup(); //TODO - Change, instead of saving backups, save just the date of the last backup and create a limit for 1 backup per hour (Minimum)
+        const latestBackup = getLatestBackup();
 
         if (latestBackup) {
             const stats = fs.statSync(latestBackup);
