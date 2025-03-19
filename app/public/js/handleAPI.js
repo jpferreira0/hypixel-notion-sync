@@ -14,7 +14,7 @@ document.getElementById('updateNotionPageIDAPIButton').addEventListener('click',
 });
 
 function hypixelAPI() {
-    fetch('http://localhost:3000/api/hypixel')
+    fetch('http://localhost:3002/api/hypixel')
         .then(response => {
             if (!response.ok) {
                 throw new Error('HTTP error! Status: ' + response.status);

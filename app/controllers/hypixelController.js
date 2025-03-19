@@ -11,7 +11,7 @@ const HYPIXEL_PROFILE_UUID = process.env.HYPIXEL_PROFILE_UUID;
 
 //* --- Backup Configuration ---
 const BACKUP_FOLDER = 'backups';
-const BACKUP_EXPIRATION = 24 * 60 * 60 * 1000; //* 1 day interval
+const BACKUP_EXPIRATION = 5 * 24 * 60 * 60 * 1000; //TODO 5 days interval
 
 //* --- Hypixel API Configuration ---
 const HYPIXEL_API_LINK = 'https://api.hypixel.net/v2/skyblock/profile?key=' + HYPIXEL_API_KEY + '&profile=' + HYPIXEL_PROFILE_UUID; //TODO - Still temporary API Key (Wait for approval)

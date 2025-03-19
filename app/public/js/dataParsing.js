@@ -12,17 +12,14 @@ import { notionAPI } from "./handleAPI.js";
 //* --- Data received from the files comes in this form:
 //* data = { name: {NAME}, amount: {AMOUNT} }
 //* -> The name has to match the name of the page in Notion
-//* -> The amount is the amount of items to be updated in the page
-
-
+//* -> The amount is the quantity of (XP, collection, etc...) to be updated in the page
 
 function dataParsing(rawData) {
     let parsedData = [];
     const profileData = Object.values(rawData.profile.members)[0];
     //* --- Parse the data (Across multiple files) ---
     // parsedData.concat(parsingBestiary(data));
-    parsedData = parsedData.concat(parsingCollections(profileData.collection));
-    //parsedData.concat(parsingCollections("data"));
+    parsedData = parsedData.concat(parsingCollections(profileData));
     // parsedData.concat(parsingSkills(data));
     // parsedData.concat(parsingSlayers(data));
     // parsedData.concat(parsingCurrency(data));
