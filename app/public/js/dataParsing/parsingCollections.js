@@ -8,12 +8,12 @@ function parsingCollections(data){
     const kuudra_completions = data.nether_island_player_data.kuudra_completed_tiers;
     let parsedData = [];
     //* Foraging Collections
-    // parsedData.push({ name: "Acacia Wood", amount: collection["LOG_2"] });
-    // parsedData.push({ name: "Birch Wood", amount: collection["LOG:2"] });
-    // parsedData.push({ name: "Dark Oak Wood", amount: collection["LOG_2:1"] });
-    // parsedData.push({ name: "Jungle Wood", amount: collection["LOG:3"] });
-    // parsedData.push({ name: "Oak Wood", amount: collection["LOG"] });
-    // parsedData.push({ name: "Spruce Wood", amount: collection["LOG:1"] });
+    parsedData.push({ name: "Acacia Wood", amount: (collection["LOG_2"] || 0) });
+    parsedData.push({ name: "Birch Wood", amount: (collection["LOG:2"] || 0) });
+    parsedData.push({ name: "Dark Oak Wood", amount: (collection["LOG_2:1"] || 0) });
+    parsedData.push({ name: "Jungle Wood", amount: (collection["LOG:3"] || 0) });
+    parsedData.push({ name: "Oak Wood", amount: (collection["LOG"] || 0) });
+    parsedData.push({ name: "Spruce Wood", amount: (collection["LOG:1"] || 0) });
     //* Mining Collections
     // parsedData.push({ name: "Coal", amount: collection["COAL"] });
     // parsedData.push({ name: "Cobblestone", amount: collection["COBBLESTONE"] });

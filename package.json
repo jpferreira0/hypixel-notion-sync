@@ -1,12 +1,12 @@
 {
-  "name": "hypixel-notion-api",
-  "version": "0.2.3",
-  "description": "",
+  "name": "hypixel-notion-sync",
+  "version": "0.2.4",
+  "description": "This tool retrieves Skyblock player stats using the Hypixel API and writes the data to a Notion database for easy profile organization and task management.",
   "main": "app/app.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+
   },
-  "author": "João Ferreira",
+  "author": "João Ferreira - TruePlayeZ",
   "license": "MIT",
   "dependencies": {
     "@notionhq/client": "^2.2.16",

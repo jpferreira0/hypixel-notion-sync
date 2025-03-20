@@ -1,5 +1,3 @@
 node_modules
-app/backups
 backups
-env
 .env
