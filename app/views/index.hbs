@@ -3,32 +3,20 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>API Fetch</title>
+    <title>Hypixel Notion Sync</title>
     <style>
-        #buttonContainer {
-            margin-top: 10px;
-        }
         button {
             margin: 5px;
             padding: 10px;
             cursor: pointer;
         }
-        #profileDetails {
-            margin-top: 20px;
-            padding: 10px;
-            border: 1px solid #ddd;
-            background-color: #f9f9f9;
-        }
     </style>
 </head>
 <body>
-    <h1>API Fetch Example</h1>
-    <button id="hypixelAPIButton">Fetch Hypixel API Data</button>
-    <div id="hypixelAPIOutput">Data will appear here...</div>
-    <button id="notionAPIButton">Update Notion</button>
-    <button id="updateNotionPageIDAPIButton">Get Notion Page IDs</button>
+    <h1>Hypixel Notion Sync</h1>
+    <button id="hypixelAPIButton">Fetch Hypixel API Data and Update Notion</button>
+    <button id="updateNotionPageIDAPIButton">Update .env file with Notion Page IDs</button>
 
-    <script src="./js/dataParsing.js"></script>
     <script type="module" src="./js/handleAPI.js"></script>
 </body>
 </html>

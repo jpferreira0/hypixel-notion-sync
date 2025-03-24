@@ -1,7 +1,6 @@
 //* --- Parse all the data relevant for the Collections ---
 //* Data to parse: NAME: {collection_name} AMOUNT: {amount};
 function parsingCollections(data){
-    console.log("Starting to parse Collections");
     const collection = data.collection;
     const catacombs_floors = data.dungeons.dungeon_types.catacombs.tier_completions;
     const master_catacombs_floors = data.dungeons.dungeon_types.master_catacombs.tier_completions;
@@ -91,14 +90,14 @@ function parsingCollections(data){
     // parsedData.push({ name: "Timite", amount: collection["TIMITE"] });
     // parsedData.push({ name: "Wilted Berberis", amount: collection["WILTED_BERBERIS"] });
     //* Boss Collections
-    parsedData.push({ name: "Bonzo", amount: (catacombs_floors["1"] || 0) + (master_catacombs_floors["1"] * 2 || 0) });
-    parsedData.push({ name: "Scarf", amount: (catacombs_floors["2"] || 0) + (master_catacombs_floors["2"] * 2 || 0) });
-    parsedData.push({ name: "The professor", amount: (catacombs_floors["3"] || 0) + (master_catacombs_floors["3"] * 2 || 0) });
-    parsedData.push({ name: "Thorn", amount: (catacombs_floors["4"] || 0) + (master_catacombs_floors["4"] * 2 || 0) });
-    parsedData.push({ name: "Livid", amount: (catacombs_floors["5"] || 0) + (master_catacombs_floors["5"] * 2 || 0) });
-    parsedData.push({ name: "Sadan", amount: (catacombs_floors["6"] || 0) + (master_catacombs_floors["6"] * 2 || 0) });
-    parsedData.push({ name: "Necron", amount: (catacombs_floors["7"] || 0) + (master_catacombs_floors["7"] * 2 || 0) });
-    parsedData.push({ name: "Kuudra", amount: (kuudra_completions["none"] || 0) + (kuudra_completions["hot"] || 0) * 2 + (kuudra_completions["burning"] || 0) * 3});
+    // parsedData.push({ name: "Bonzo", amount: (catacombs_floors["1"] || 0) + (master_catacombs_floors["1"] * 2 || 0) });
+    // parsedData.push({ name: "Scarf", amount: (catacombs_floors["2"] || 0) + (master_catacombs_floors["2"] * 2 || 0) });
+    // parsedData.push({ name: "The professor", amount: (catacombs_floors["3"] || 0) + (master_catacombs_floors["3"] * 2 || 0) });
+    // parsedData.push({ name: "Thorn", amount: (catacombs_floors["4"] || 0) + (master_catacombs_floors["4"] * 2 || 0) });
+    // parsedData.push({ name: "Livid", amount: (catacombs_floors["5"] || 0) + (master_catacombs_floors["5"] * 2 || 0) });
+    // parsedData.push({ name: "Sadan", amount: (catacombs_floors["6"] || 0) + (master_catacombs_floors["6"] * 2 || 0) });
+    // parsedData.push({ name: "Necron", amount: (catacombs_floors["7"] || 0) + (master_catacombs_floors["7"] * 2 || 0) });
+    // parsedData.push({ name: "Kuudra", amount: (kuudra_completions["none"] || 0) + (kuudra_completions["hot"] || 0) * 2 + (kuudra_completions["burning"] || 0) * 3});
     return parsedData;
 }
 

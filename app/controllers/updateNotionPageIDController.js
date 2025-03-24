@@ -11,60 +11,79 @@ const NOTION_DATABASE_ID = process.env.NOTION_DATABASE_ID;
 //* --- Notion Configuration ---
 const notion = new Client({ auth: NOTION_API_KEY });
 
-async function getDatabaseIdFromPage(pageId) {
-    try {
-        const response = await notion.blocks.children.list({
-            block_id: pageId,
-        });
-
-        // Find the first block that is a database
-        const databaseBlock = response.results.find(
-            (block) => block.type === "child_database"
-        );
-
-        if (databaseBlock) {
-            // console.log("Database found: " + databaseBlock.id);
-            return databaseBlock.id;
-        } else {
-            console.log("No database found inside this page.");
-            return null;
-        }
-    } catch (error) {
-        console.error("Error retrieving database:", error);
-    }
-}
-
-//* --- Get and update the .env file with all the pageIDs from the Notion Database ---
 async function getNotionPagesIDAPI(req, res) {
     let pages = [];
-    //* --- Get the Database data ---
+    let hasMore = true;
+    let startCursor = undefined;
+
     try {
-        const database = await notion.databases.query({
-            database_id: NOTION_DATABASE_ID,
-        });
-        //* --- Get pageIDs + Name of the pages ---
-        pages = database.results.map(page => ({ id: page.id, name: page.properties.Name.title[0].plain_text }));
-        // res.status(200).json({ message: "PageIDs updated" });
-    }
+        //* Get the number of pages in the Database and adds them to an array.
+        while (hasMore) {
+            const response = await notion.databases.query({
+                database_id: NOTION_DATABASE_ID,
+                filter: {
+                    property: "Type",
+                    select: {
+                        equals: "Main"
+                    }
+                },
+                sorts: [
+                    {
+                        timestamp: "created_time", // Sort by Notion's built-in creation time
+                        direction: "descending"
+                    }
+                ],
+                page_size: 100, // Max per request
+                start_cursor: startCursor // Get next batch if available
+            });
+
+            //* --- Add fetched pages to array ---
+            pages.push(
+                ...response.results.map(page => ({
+                    id: page.id,
+                    name: page.properties.Name.title[0].plain_text
+                }))
+            );
+
+            //* --- Check if there are more pages to fetch ---
+            hasMore = response.has_more;
+            startCursor = response.next_cursor; // Move to next batch
+
+            console.log(`Fetched ${pages.length} pages so far...`);
+        }
+    } 
     catch (error) {
-        console.error(error);
-        res.status(500).json({ error: error.message });
+        console.error("Error fetching Notion pages:", error);
+        return res.status(500).json({ error: error.message });
     }
-    //* Get the Database ID that is inside each page
+
+    //* Load existing .env content to avoid duplicates
+    const envFilePath = '.env';
+    let existingEnvContent = fs.existsSync(envFilePath) ? fs.readFileSync(envFilePath, 'utf8') : '';
+
+    //* --- Write pages to .env, stopping if a duplicate is found ---
     for (const page of pages) {
         let pageName = "NOTION_PAGE_ID__" + page.name.toUpperCase().replace(/ /g, "_");
-        let databaseName = "NOTION_DATABASE_ID__" + page.name.toUpperCase().replace(/ /g, "_");
         let pageID = page.id.toString();
 
+        //* Check if entry already exists in .env
+        if (existingEnvContent.includes(`${pageName} = ${pageID}`)) {
+            console.log(`Duplicate found: ${pageName} already exists. Stopping.`);
+            break; // Stops writing
+        }
+
+        //* Append new entry to .env
         try {
-            let databaseID = await getDatabaseIdFromPage(pageID);
-            fs.appendFileSync('.env', `\n${pageName} = ${pageID}`);
-            fs.appendFileSync('.env', `\n${databaseName} = ${databaseID}`);
-        } catch (error) {
+            fs.appendFileSync(envFilePath, `\n${pageName} = ${pageID}`);
+            existingEnvContent += `\n${pageName} = ${pageID}`; // Update in-memory content
+            console.log(`Added: ${pageName} = ${pageID}`);
+        } 
+        catch (error) {
             console.error("Error processing page:", page.name, error);
         }
     }
-    res.status(200).json({ message: "PageIDs updated" });
+
+    return res.status(200).json({ message: `PageIDs updated. Total pages processed: ${pages.length}` });
 }
 
 module.exports = { getNotionPagesIDAPI };

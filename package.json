@@ -1,6 +1,6 @@
 {
   "name": "hypixel-notion-sync",
-  "version": "0.2.4",
+  "version": "0.3.0",
   "description": "This tool retrieves Skyblock player stats using the Hypixel API and writes the data to a Notion database for easy profile organization and task management.",
   "main": "app/app.js",
   "scripts": {

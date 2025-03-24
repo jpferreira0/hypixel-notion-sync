@@ -11,7 +11,7 @@ const HYPIXEL_PROFILE_UUID = process.env.HYPIXEL_PROFILE_UUID;
 
 //* --- Backup Configuration ---
 const BACKUP_FOLDER = 'backups';
-const BACKUP_EXPIRATION = 5 * 24 * 60 * 60 * 1000; //TODO 5 days interval
+const BACKUP_EXPIRATION = 30 * 24 * 60 * 60 * 1000; //TODO 30 days interval -> Update to 12 hours.
 
 //* --- Hypixel API Configuration ---
 const HYPIXEL_API_LINK = 'https://api.hypixel.net/v2/skyblock/profile?key=' + HYPIXEL_API_KEY + '&profile=' + HYPIXEL_PROFILE_UUID; //TODO - Still temporary API Key (Wait for approval)
@@ -47,16 +47,16 @@ async function hypixelAPI(req, res) {
         const latestBackup = getLatestBackup();
 
         if (latestBackup) {
-            const stats = fs.statSync(latestBackup);
+            const backupStats = fs.statSync(latestBackup);
             const now = Date.now();
-            //* --- If the backup has less than 24 hours, get the data from the backup ---
-            if (now - stats.mtimeMs < BACKUP_EXPIRATION) { 
+            //* --- If the backup has less than 12 hours, get the data from the backup ---
+            if (now - backupStats.mtimeMs < BACKUP_EXPIRATION) { 
                 console.log('Serving data from latest backup:', latestBackup);
                 const backupData = fs.readFileSync(latestBackup, 'utf8');
                 return res.json(JSON.parse(backupData));
             }
         }
-        //* --- If the backup is older than 24 hours, get the data from the API ---
+        //* --- If there was no backup or it is older than 12 hours, get the data from the API ---
         console.log('Fetching new data from API.');
         const response = await axios.get(HYPIXEL_API_LINK);
         const data = response.data;
@@ -64,7 +64,7 @@ async function hypixelAPI(req, res) {
         //* --- Save the new backup ---
         const backupFile = getBackupFileName();
         fs.writeFileSync(backupFile, JSON.stringify(data, null, 2));
-        res.json(data);
+        res.json(data); //* Sends the data back to the client.
 
     } catch (error) {
         console.error('Error fetching API:', error);

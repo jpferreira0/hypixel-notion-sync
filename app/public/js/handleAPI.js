@@ -4,12 +4,13 @@ document.getElementById('hypixelAPIButton').addEventListener('click', function (
     hypixelAPI();
 });
 
-document.getElementById('notionAPIButton').addEventListener('click', function () {
-    dataParsing("data");
-    //notionAPI();
-});
+// document.getElementById('notionAPIButton').addEventListener('click', function () {
+//     dataParsing("data");
+//     //notionAPI();
+// });
 
 document.getElementById('updateNotionPageIDAPIButton').addEventListener('click', function () {
+    console.log("Going to backend");
     updateNotionPageIDAPI();
 });
 
@@ -22,6 +23,7 @@ function hypixelAPI() {
             return response.json();
         })
         .then(data => {
+            //* Receives the data and begins to parse it in order to be sent to notion.
             dataParsing(data);
         })
         .catch(error => {
@@ -30,9 +32,7 @@ function hypixelAPI() {
 }
 
 function notionAPI(pageName, amount) {
-    console.log("handleAPI pageName: ", pageName);
-    console.log("handleAPI amount: ", amount);
-    fetch('http://localhost:3000/api/notion', {
+    fetch('http://localhost:3002/api/notion', {
         method: 'POST',
         headers: {
             'Content-Type': 'application/json',
@@ -54,7 +54,7 @@ function notionAPI(pageName, amount) {
 }
 
 function updateNotionPageIDAPI() {
-    fetch('http://localhost:3000/api/updateNotionPageID')
+    fetch('http://localhost:3002/api/updateNotionPageID')
         .then(response => {
             if (!response.ok) {
                 throw new Error('HTTP error! Status: ' + response.status);

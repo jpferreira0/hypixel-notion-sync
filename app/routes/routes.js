@@ -13,7 +13,7 @@ router.get('/api/hypixel', hypixelAPI);
 const { notionAPI } = require('../controllers/notionController');
 router.post('/api/notion', notionAPI);
 
-//* Update Notion Page IDs
+//* Update .env file with the Notion Page IDs
 const { getNotionPagesIDAPI } = require('../controllers/updateNotionPageIDController');
 router.get('/api/updateNotionPageID', getNotionPagesIDAPI);
 
